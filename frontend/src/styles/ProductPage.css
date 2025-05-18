@@ -1,0 +1,92 @@
+.product-page {
+  padding: 1rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+.logo-center {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.logo {
+  height: 40px;
+}
+
+.icons-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cart-icon, .profile-icon {
+  position: relative;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 5px;
+  border-radius: 50%;
+}
+
+.page-title {
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.product-image-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.product-img {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  margin: 0 1rem;
+  border-radius: 12px;
+}
+
+.nav-button {
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.product-details {
+  padding: 1rem;
+  text-align: center;
+}
+
+.add-to-cart-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  margin: 2rem auto;
+  display: block;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #218838;
+}
