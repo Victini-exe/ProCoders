@@ -28,6 +28,7 @@ class User(db.Model, UserMixin):
     fs_uniquifier = db.Column(db.String(255), unique=True, nullable=False)
     active = db.Column(db.Boolean, nullable=False, default=True)
     display_name = db.Column(db.String(80), nullable=False)
+    address = db.Column(db.String(255), nullable=True)
 
     roles = db.relationship('Role', backref='bearer', secondary='users_roles')
     products = db.relationship('Product', backref='seller', lazy=True)
