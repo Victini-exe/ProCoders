@@ -7,6 +7,7 @@ const SignupPage = () => {
 
   const [formData, setFormData] = useState({
     displayName: '',
+    userName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -20,6 +21,7 @@ const SignupPage = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!formData.displayName.trim()) newErrors.displayName = 'Display name is required';
+    if (!formData.userName.trim()) newErrors.userName = 'Username is required';
     if (!emailRegex.test(formData.email)) newErrors.email = 'Invalid email format';
     if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
     if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
@@ -36,8 +38,7 @@ const SignupPage = () => {
     setSubmitting(true);
 
     try {
-      // Replace with actual API call
-      const response = await fetch('http://localhost:5000/api/auth/signup', {
+      const response = await fetch('https://6b2b-49-36-214-232.ngrok-free.app/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -48,7 +49,17 @@ const SignupPage = () => {
         alert('Signup successful');
         navigate('/login');
       } else {
-        setErrors({ api: data.message || 'Signup failed' });
+        // Handle all possible error response formats
+        if (typeof data === 'string') {
+          setErrors({ api: data });
+        } else if (data.message) {
+          setErrors({ api: data.message });
+        } else if (data.username) {
+          setErrors({ userName: typeof data.username === 'string' ? data.username : JSON.stringify(data.username) });
+        } else {
+          // Safely stringify the entire error object if format is unexpected
+          setErrors({ api: JSON.stringify(data) });
+        }
       }
     } catch (error) {
       setErrors({ api: 'Network error. Please try again.' });
@@ -59,6 +70,20 @@ const SignupPage = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear error when user starts typing
+    if (errors[e.target.name]) {
+      setErrors({ ...errors, [e.target.name]: '' });
+    }
+    if (errors.api) {
+      setErrors({ ...errors, api: '' });
+    }
+  };
+
+  // Helper function to safely render error messages
+  const renderError = (error) => {
+    if (!error) return null;
+    if (typeof error === 'string') return error;
+    return JSON.stringify(error);
   };
 
   return (
@@ -73,7 +98,16 @@ const SignupPage = () => {
           value={formData.displayName}
           onChange={handleChange}
         />
-        {errors.displayName && <p className="error">{errors.displayName}</p>}
+        {errors.displayName && <p className="error">{renderError(errors.displayName)}</p>}
+
+        <input
+          type="text"
+          name="userName"
+          placeholder="Username"
+          value={formData.userName}
+          onChange={handleChange}
+        />
+        {errors.userName && <p className="error">{renderError(errors.userName)}</p>}
 
         <input
           type="email"
@@ -82,7 +116,7 @@ const SignupPage = () => {
           value={formData.email}
           onChange={handleChange}
         />
-        {errors.email && <p className="error">{errors.email}</p>}
+        {errors.email && <p className="error">{renderError(errors.email)}</p>}
 
         <input
           type="password"
@@ -91,7 +125,7 @@ const SignupPage = () => {
           value={formData.password}
           onChange={handleChange}
         />
-        {errors.password && <p className="error">{errors.password}</p>}
+        {errors.password && <p className="error">{renderError(errors.password)}</p>}
 
         <input
           type="password"
@@ -100,15 +134,15 @@ const SignupPage = () => {
           value={formData.confirmPassword}
           onChange={handleChange}
         />
-        {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
+        {errors.confirmPassword && <p className="error">{renderError(errors.confirmPassword)}</p>}
 
-        <button type="submit" disabled={submitting}>Sign Up</button>
-        {errors.api && <p className="error">{errors.api}</p>}
+        <button type="submit" disabled={submitting}>
+          {submitting ? 'Signing Up...' : 'Sign Up'}
+        </button>
+        {errors.api && <p className="error">{renderError(errors.api)}</p>}
       </form>
     </div>
   );
 };
 
 export default SignupPage;
-
-
