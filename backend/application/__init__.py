@@ -1,6 +1,6 @@
 from flask import Flask 
 from .database import db 
-from .models import User, Role
+from .models import User, Role, Category
 from config import LocalDevelopmentConfig
 from flask_security import Security, SQLAlchemyUserDatastore, hash_password
 from flask_restful import Api
@@ -23,17 +23,24 @@ def create_app():
 
     with app.app_context():
         db.create_all()
-
-        app.security.datastore.find_or_create_role(name = "admin", description = "Superuser of app")
+        
         app.security.datastore.find_or_create_role(name = "user", description = "User of the app")
         db.session.commit()
 
-        if not app.security.datastore.find_user(email = "admin@email.com"):
-            app.security.datastore.create_user(email = "admin@email.com",
-                                            username = "admin",
-                                            password = hash_password("1234"),
-                                            roles = ['admin'])
+        # Initialize predefined categories
+        default_categories = [
+            "Electronics & Gadgets",
+            "Fashion & Accessories",
+            "Home & Living",
+            "Books & Stationery",
+            "Sports & Fitness"
+        ]
 
+        for category_name in default_categories:
+            if not Category.query.filter_by(name=category_name).first():
+                category = Category(name=category_name)
+                db.session.add(category)
+        
         db.session.commit()
 
     return app

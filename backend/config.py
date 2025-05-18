@@ -14,7 +14,3 @@ class LocalDevelopmentConfig(Config):
     SECURITY_TOKEN_AUTHENTICATION_HEADER = "Authorization"
     SECURITY_REDIRECT_BEHAVIOR = "spa"  # Disable redirects to login page
     SECURITY_UNAUTHORIZED_VIEW = None  # Return a 401 response instead of redirecting
-    CACHE_TYPE = 'RedisCache'
-    CACHE_REDIS_HOST = 'localhost'  # Change if Redis is running elsewhere
-    CACHE_REDIS_PORT = 6379
-    CACHE_DEFAULT_TIMEOUT = 300 # In seconds

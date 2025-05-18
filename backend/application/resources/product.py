@@ -29,7 +29,6 @@ class ProductListResource(Resource):
         return [p.__dict__ for p in products], 200
 
     @auth_required()
-    @roles_accepted('user')
     def post(self):
         args = self.parser.parse_args()
         product = Product(
@@ -66,7 +65,6 @@ class ProductResource(Resource):
         return product.__dict__, 200
 
     @auth_required()
-    @roles_accepted('user')
     def put(self, product_id):
         args = self.parser.parse_args()
         product = Product.query.get_or_404(product_id)
@@ -80,7 +78,6 @@ class ProductResource(Resource):
         return product.__dict__, 200
 
     @auth_required()
-    @roles_accepted('user')
     def delete(self, product_id):
         product = Product.query.get_or_404(product_id)
         if product.seller_id != current_user.id:
