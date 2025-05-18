@@ -1,2 +1,19 @@
 **/.venv
 **/instance
+
+# Python bytecode and cache files
+__pycache__/
+*/__pycache__/
+*/**/__pycache__/
+*.py[cod]
+*/**/*.py[cod]
+*.so
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Specific to your project structure
+backend/__pycache__/
+backend/application/__pycache__/
+backend/application/resources/__pycache__/
