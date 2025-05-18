@@ -5,7 +5,7 @@ import '../styles/LandingPage.css';
 
 const LandingPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [cartCount, setCartCount] = useState(2); // example count
+  const [cartCount, setCartCount] = useState(2);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -74,15 +74,39 @@ const LandingPage = () => {
 
       <div className="product-grid">
         {products.length > 0 ? products.map(product => (
-          <div
-            className="product-card"
-            key={product.id}
-            onClick={() => navigate(`/product/${product.id}`)}
-            style={{ cursor: 'pointer' }}
-          >
-            <img src={product.image} alt={product.name} />
-            <h3>{product.name}</h3>
-          </div>
+        //   <div
+        //     className="product-card"
+        //     key={product.id}
+        //     onClick={() => navigate(`/product/${product.id}`)}
+        //     style={{ cursor: 'pointer' }}
+        //   >
+        //     <img src={product.image} alt={product.name} />
+        //     <h3>{product.name}</h3>
+        //   </div>
+
+        <div
+  className="product-card"
+  key={product.id}
+  onClick={() => navigate('/product', {
+    state: {
+      product: {
+        ...product,
+        description: 'This is a sample description for ' + product.name,
+        price: 499,
+        images: [
+          'https://via.placeholder.com/300x200',
+          'https://via.placeholder.com/300x201',
+          'https://via.placeholder.com/300x202',
+        ],
+      },
+    }
+  })}
+>
+  <img src={product.image} alt={product.name} />
+  <h3>{product.name}</h3>
+</div>
+
+
         )) : <p className="no-results">No products found</p>}
       </div>
     </div>

@@ -1,92 +1,79 @@
 .product-page {
+  text-align: center;
   padding: 1rem;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: sans-serif;
 }
 
-.top-bar {
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-}
-
-.logo-center {
-  flex-grow: 1;
-  text-align: center;
 }
 
 .logo {
-  height: 40px;
-}
-
-.icons-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.cart-icon, .profile-icon {
-  position: relative;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: bold;
   cursor: pointer;
 }
 
-.cart-badge {
+.header-icons {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.5rem;
+}
+
+.cart {
+  position: relative;
+  cursor: pointer;
+}
+
+.cart .badge {
   position: absolute;
   top: -8px;
-  right: -10px;
-  background-color: red;
+  right: -8px;
+  background: red;
   color: white;
-  font-size: 0.7rem;
-  padding: 2px 5px;
   border-radius: 50%;
+  padding: 3px 6px;
+  font-size: 0.8rem;
+}
+
+.profile {
+  cursor: pointer;
 }
 
 .page-title {
-  text-align: center;
-  margin: 1rem 0;
-}
-
-.product-image-section {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 1rem 0;
-}
-
-.product-img {
-  width: 300px;
-  height: 300px;
-  object-fit: cover;
-  margin: 0 1rem;
-  border-radius: 12px;
-}
-
-.nav-button {
+  margin-top: 1rem;
   font-size: 2rem;
-  background: none;
-  border: none;
-  cursor: pointer;
 }
 
-.product-details {
-  padding: 1rem;
-  text-align: center;
+.product-images {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+  gap: 1rem;
 }
 
-.add-to-cart-btn {
-  background-color: #28a745;
+.product-images img.main-image {
+  width: 300px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.product-info {
+  margin: 1rem auto;
+  max-width: 600px;
+  text-align: left;
+}
+
+.add-to-cart {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background-color: #007bff;
   color: white;
   border: none;
-  padding: 1rem 2rem;
-  margin: 2rem auto;
-  display: block;
-  font-size: 1rem;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.add-to-cart-btn:hover {
-  background-color: #218838;
 }

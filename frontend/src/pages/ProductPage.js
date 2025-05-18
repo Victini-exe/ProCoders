@@ -1,66 +1,58 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { FaShoppingCart, FaUserCircle } from 'react-icons/fa';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { FaUserCircle, FaShoppingCart } from 'react-icons/fa';
 import '../styles/ProductPage.css';
-// import logo from '../assets/logo.png';
 
-const ProductPage = ({ products, addToCart, cartCount }) => {
-  const { productId } = useParams();
-  const product = products.find((p) => p.id.toString() === productId);
-  const [currentImage, setCurrentImage] = useState(0);
+const ProductPage = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { product } = location.state || {};
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [cartCount, setCartCount] = useState(2); // Update with global state later
 
-  const nextImage = () => {
-    setCurrentImage((prev) => (prev + 1) % product.images.length);
+  if (!product) {
+    return <div>No product data found.</div>;
+  }
+
+  const handleAddToCart = () => {
+    setCartCount(prev => prev + 1);
+    // Add to cart logic to be implemented with context or global state
   };
-
-  const prevImage = () => {
-    setCurrentImage((prev) =>
-      prev === 0 ? product.images.length - 1 : prev - 1
-    );
-  };
-
-  if (!product) return <div>Product not found</div>;
 
   return (
     <div className="product-page">
-      <header className="top-bar">
-        <div className="logo-center">
-          <img src={logo} alt="Logo" className="logo" />
-        </div>
-        <div className="icons-right">
-          <div className="cart-icon" onClick={() => (window.location.href = '/cart')}>
+      <header className="header">
+        <div className="logo" onClick={() => navigate('/')}>MyStore</div>
+        <div className="header-icons">
+          <div className="cart" onClick={() => navigate('/cart')}>
             <FaShoppingCart />
-            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+            {cartCount > 0 && <span className="badge">{cartCount}</span>}
           </div>
-          <div
-            className="profile-icon"
-            onClick={() => (window.location.href = '/profile')}
-          >
+          <div className="profile" onClick={() => navigate('/dashboard')}>
             <FaUserCircle />
           </div>
         </div>
       </header>
 
-      <h2 className="page-title">Product Page</h2>
+      <h1 className="page-title">Product Page</h1>
 
-      <div className="product-image-section">
-        <button onClick={prevImage} className="nav-button">◀</button>
-        <img src={product.images[currentImage]} alt={product.name} className="product-img" />
-        <button onClick={nextImage} className="nav-button">▶</button>
+      <div className="product-images">
+        <button onClick={() => setSelectedImageIndex((selectedImageIndex - 1 + product.images.length) % product.images.length)}>◀</button>
+        <img
+          src={product.images[selectedImageIndex]}
+          alt={product.name}
+          className="main-image"
+        />
+        <button onClick={() => setSelectedImageIndex((selectedImageIndex + 1) % product.images.length)}>▶</button>
       </div>
 
-      <div className="product-details">
-        <h3>{product.name}</h3>
+      <div className="product-info">
+        <h2>{product.name}</h2>
         <p>{product.description}</p>
-        <p>Price: ₹{product.price}</p>
-        <p>Category: {product.category}</p>
-        {/* Add more details as needed */}
+        <p><strong>Price:</strong> ₹{product.price}</p>
       </div>
 
-      <button
-        className="add-to-cart-btn"
-        onClick={() => addToCart(product)}
-      >
+      <button className="add-to-cart" onClick={handleAddToCart}>
         Add to Cart
       </button>
     </div>

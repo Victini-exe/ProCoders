@@ -5,15 +5,15 @@ import '../styles/LoginPage.css';
 const LoginPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    emailOrUsername: '',
+    email: '',
     password: ''
   });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
-  const validate = () => {
+  const validate = () => {  
     const newErrors = {};
-    if (!formData.emailOrUsername.trim()) newErrors.emailOrUsername = 'Email or Username is required';
+    if (!formData.email.trim()) newErrors.email = 'Email or Username is required';
     if (!formData.password.trim()) newErrors.password = 'Password is required';
     return newErrors;
   };
@@ -31,7 +31,7 @@ const LoginPage = () => {
     setSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch('https://6b2b-49-36-214-232.ngrok-free.app/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -58,12 +58,12 @@ const LoginPage = () => {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          name="emailOrUsername"
+          name="email"
           placeholder="Email or Username"
-          value={formData.emailOrUsername}
+          value={formData.email}
           onChange={handleChange}
         />
-        {errors.emailOrUsername && <p className="error">{errors.emailOrUsername}</p>}
+        {errors.email && <p className="error">{errors.email}</p>}
 
         <input
           type="password"
