@@ -1,0 +1,67 @@
+.add-product-page {
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.header-icons {
+  display: flex;
+  gap: 15px;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.title {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.image-section img {
+  display: block;
+  margin: 20px auto;
+  max-width: 300px;
+}
+
+.form-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.form-section input,
+.form-section textarea {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.form-section label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.submit-btn {
+  display: block;
+  margin: 30px auto;
+  padding: 10px 25px;
+  font-size: 1rem;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
