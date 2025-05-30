@@ -82,4 +82,10 @@ manage basic product listings (including title, description, category, price, an
 one image placeholder), and browse these listings with basic filtering and search
 capabilities. The system employs efficient data structures for managing user and
 product data, ensuring a stable and responsive user experience.
+<<<<<<< HEAD
 >>>>>>> 237576b1410bcfc6fd0ff19937efe08fde4cc052
+=======
+
+# Video Link
+https://drive.google.com/file/d/1XQJRZ8Y2IzLuJhiDsDoDXYonOF4I22Ix/view?usp=sharing
+>>>>>>> 055bdca798452fc026f76c1cb810e984de551f7b

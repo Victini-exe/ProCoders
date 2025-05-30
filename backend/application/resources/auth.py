@@ -40,12 +40,14 @@ class SignupResource(Resource):
         self.parser.add_argument('username', type=str, required=True, help='Username is required')
         self.parser.add_argument('password', type=str, required=True, help='Password is required')
         self.parser.add_argument('address', type=str)
+        self.parser.add_argument('display_name', type=str, required=True, help='Display name is required')
 
     def post(self):
         args = self.parser.parse_args()
         email = args['email']
         username = args['username']
         password = args['password']
+        display_name = args['display_name']
         
         if app.security.datastore.find_user(email=email):
             return {"message": "User already exists"}, 400
@@ -57,6 +59,7 @@ class SignupResource(Resource):
                 email=email,
                 username=username,
                 password=hash_password(str(password)),
+                display_name=display_name,
                 roles=[role],
             )
             db.session.commit()
