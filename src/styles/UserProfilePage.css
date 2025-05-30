@@ -1,0 +1,99 @@
+/* src/styles/UserDashboard.css */
+
+.container {
+  padding: 1rem;
+  font-family: sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.header-icons {
+  display: flex;
+  gap: 1rem;
+}
+
+.icon-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.icon-wrapper img {
+  width: 32px;
+  height: 32px;
+}
+
+.badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
+.profile-section {
+  display: flex;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 2rem;
+}
+
+.profile-picture {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.profile-details {
+  flex: 1;
+}
+
+.profile-details h3 {
+  margin: 0;
+}
+
+.profile-details p {
+  margin: 4px 0;
+}
+
+.profile-details button {
+  margin-top: 0.5rem;
+}
+
+.profile-details input {
+  display: block;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  width: 200px;
+}
+
+.dashboard-nav {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.dashboard-nav button {
+  padding: 0.75rem 1.5rem;
+  font-weight: bold;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
