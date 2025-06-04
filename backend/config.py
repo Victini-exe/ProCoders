@@ -12,6 +12,11 @@ class Config:
     SECURITY_REDIRECT_BEHAVIOR = "spa"  # Disable redirects to login page
     SECURITY_UNAUTHORIZED_VIEW = None  # Return a 401 response instead of redirecting
 
+    # Cloudinary settings
+    CLOUDINARY_CLOUD_NAME = os.getenv('CLOUDINARY_CLOUD_NAME')
+    CLOUDINARY_API_KEY = os.getenv('CLOUDINARY_API_KEY')
+    CLOUDINARY_API_SECRET = os.getenv('CLOUDINARY_API_SECRET')
+
 class DevelopmentConfig(Config):
     # Development configurations
     DEBUG = True
