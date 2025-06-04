@@ -8,7 +8,6 @@ class CategoryListResource(Resource):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('name', type=str, required=True, help='Category name is required', location='json')
 
-    @auth_required()
     def get(self):
         categories = Category.query.all()
         return [{'id': cat.id, 'name': cat.name} for cat in categories], 200

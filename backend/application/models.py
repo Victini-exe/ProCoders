@@ -4,11 +4,6 @@ from datetime import datetime, timezone
 import json
 from enum import Enum
 
-class LanguageEnum(str, Enum):
-    ENGLISH = 'en'
-    HINDI = 'hi'
-    GUJARATI = 'gu'
-
 class ProductStatus(str, Enum):
     ACTIVE = 'active'
     SOLD = 'sold'
@@ -72,7 +67,7 @@ class User(db.Model, UserMixin):
     
     # Profile fields
     profile_image_url = db.Column(db.String(500), nullable=True)
-    preferred_language = db.Column(db.Enum(LanguageEnum), default=LanguageEnum.ENGLISH)
+    preferred_language = db.Column(db.String(10), default='en')
     
     # Rating fields
     rating_as_seller = db.Column(db.Float, default=0.0)
@@ -98,7 +93,6 @@ class User(db.Model, UserMixin):
     bids = db.relationship('Bid', backref='bidder', lazy=True)
     sent_messages = db.relationship('Message', backref='sender', lazy=True)
     
-    
     def to_dict(self):
         return {
             'id': self.id,
@@ -108,7 +102,7 @@ class User(db.Model, UserMixin):
             'is_verified_email': self.is_verified_email,
             'is_verified_phone': self.is_verified_phone,
             'profile_image_url': self.profile_image_url,
-            'preferred_language': self.preferred_language.value if self.preferred_language else None,
+            'preferred_language': self.preferred_language,
             'rating_as_seller': self.rating_as_seller,
             'rating_as_buyer': self.rating_as_buyer,
             'active': self.active,

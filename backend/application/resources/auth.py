@@ -77,7 +77,7 @@ class SignupResource(Resource):
                 email = data.get('email')
                 password = data.get('password')
                 phone_number = data.get('phoneNumber')
-                preferred_language = data.get('preferredLanguage', 'en')
+                preferred_language = data.get('preferredLanguage', 'english')
                 profile_image_url = data.get('profileImageUrl')
 
                 # Validate required fields

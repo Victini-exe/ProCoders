@@ -15,7 +15,16 @@ def create_app():
     app.security = Security(app, datastore)
     app.app_context().push()
 
-    CORS(app)
+    # Configure CORS with specific settings
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": "*",  # Allow all origins
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": "*",  # Allow all headers
+            "supports_credentials": True,
+            "expose_headers": ["Content-Type", "Authorization"]
+        }
+    })
 
     api = Api(app)
     register_resources(api)
