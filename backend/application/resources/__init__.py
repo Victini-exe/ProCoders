@@ -28,3 +28,10 @@ def register_resources(api: Api):
     from .category import CategoryListResource, CategoryResource
     api.add_resource(CategoryListResource, '/categories')
     api.add_resource(CategoryResource, '/categories/<int:category_id>')
+
+    # Chat endpoints
+    from .chat import ChatResource, ChatDetailResource, MessageResource, UnreadMessagesResource
+    api.add_resource(ChatResource, '/chats')
+    api.add_resource(ChatDetailResource, '/chats/<int:chat_id>')
+    api.add_resource(MessageResource, '/chats/<int:chat_id>/messages')
+    api.add_resource(UnreadMessagesResource, '/chats/unread')

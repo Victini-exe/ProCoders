@@ -1,34 +1,72 @@
-# API Resource Documentation
+# Chat System API
 
-This document provides an overview of the API resources available in the application.
+## Endpoints
 
-## Auth Endpoints
-| Resource         | HTTP Method | Endpoint         | Description          |
-|------------------|-------------|------------------|----------------------|
-| `LoginResource`  | POST        | `/api/login`     | User login           |
-| `SignupResource` | POST        | `/api/signup/`   | User registration    |
-| `LogoutResource` | POST        | `/api/logout`    | User logout          |
+### 1. `/chats`
+- **POST** - Create/Get chat
+  ```json
+  {
+    "product_id": "integer"
+  }
+  ```
 
-## Product Endpoints
-| Resource              | HTTP Method      | Endpoint                     | Description                           |
-|-----------------------|------------------|------------------------------|---------------------------------------|
-| `ProductListResource` | GET, POST        | `/products`                  | List or create products               |
-| `ProductResource`     | GET, PUT, DELETE | `/products/<int:product_id>` | Retrieve, update, or delete a product |
+- **GET** - List all user's chats
+  - Returns array of chat objects with messages
 
-## Cart Endpoints
-| Resource            | HTTP Method      | Endpoint                                      | Description                        |
-|---------------------|------------------|-----------------------------------------------|------------------------------------|
-| `CartListResource`  | GET, POST        | `/cart`                                       | List or add items to the cart      |
-| `CartItemResource`  | GET, PUT, DELETE | `/cart/item`, `/cart/item/<int:cart_item_id>` | Manage individual cart items       |
+### 2. `/chats/<chat_id>`
+- **GET** - Get chat details and messages
+  - Automatically marks messages as read
+  - Returns chat object with messages
 
-## User Endpoints
-| Resource           | HTTP Method      | Endpoint                    | Description                        |
-|--------------------|------------------|-----------------------------|------------------------------------|
-| `UserListResource` | GET, POST        | `/users`                    | List or create users               |
-| `UserResource`     | GET, PUT, DELETE | `/users/<int:user_id>`      | Retrieve, update, or delete a user |
+### 3. `/chats/<chat_id>/messages`
+- **POST** - Send message
+  ```json
+  {
+    "content": "string"
+  }
+  ```
 
-## Category Endpoints
-| Resource                | HTTP Method      | Endpoint                             | Description                            |
-|-------------------------|------------------|--------------------------------------|----------------------------------------|
-| `CategoryListResource`  | GET, POST        | `/categories`                        | List or create categories              |
-| `CategoryResource`      | GET, PUT, DELETE | `/categories/<int:category_id>`      | Retrieve, update, or delete a category |
+- **GET** - Get all messages in chat
+  - Returns chronologically ordered messages
+
+### 4. `/chats/unread`
+- **GET** - Get unread message counts
+  ```json
+  {
+    "total_unread": "integer",
+    "unread_by_chat": {
+      "chat_id": "count"
+    }
+  }
+  ```
+
+## Response Objects
+
+### Chat Object
+```json
+{
+  "id": "integer",
+  "buyer_id": "integer",
+  "seller_id": "integer",
+  "product_id": "integer",
+  "created_at": "datetime",
+  "messages": ["Message objects"]
+}
+```
+
+### Message Object
+```json
+{
+  "id": "integer",
+  "chat_id": "integer",
+  "sender_id": "integer",
+  "content": "string",
+  "sent_at": "datetime",
+  "is_read": "boolean"
+}
+```
+
+## Notes
+- All endpoints require authentication token
+- Only buyers can initiate chats
+- Messages are automatically marked as read when chat is viewed
