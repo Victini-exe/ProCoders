@@ -81,13 +81,12 @@ class User(db.Model, UserMixin):
     # Timestamp fields
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
-
+    
     # Relationships
     roles = db.relationship('Role', backref='bearer', secondary='users_roles')
     products = db.relationship('Product', backref='seller', lazy=True)
     cart_items = db.relationship('CartItem', backref='user', lazy=True)
     purchases = db.relationship('Purchase', backref='user', lazy=True)
-    bids = db.relationship('Bid', backref='user', lazy=True)
     saved_items = db.relationship('SavedItem', backref='user', lazy=True)
     saved_searches = db.relationship('SearchQuery', backref='user', lazy=True)
     buyer_chats = db.relationship('Chat', foreign_keys='Chat.buyer_id', backref='buyer', lazy=True)
@@ -95,7 +94,9 @@ class User(db.Model, UserMixin):
     reviews_given = db.relationship('Review', foreign_keys='Review.reviewer_id', backref='reviewer', lazy=True)
     reviews_received = db.relationship('Review', foreign_keys='Review.reviewee_id', backref='reviewee', lazy=True)
     disputes_filed = db.relationship('Dispute', backref='complainant', lazy=True)
-    notifications = db.relationship('Notification', backref='user', lazy=True)    
+    notifications = db.relationship('Notification', backref='user', lazy=True)
+    bids = db.relationship('Bid', backref='bidder', lazy=True)
+    sent_messages = db.relationship('Message', backref='sender', lazy=True)
     
     
     def to_dict(self):
@@ -128,12 +129,12 @@ class Category(db.Model):
 
 class Product(db.Model):
     __tablename__ = 'product'
-
+    
     id = db.Column(db.Integer, primary_key=True)
     seller_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     title = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=True)
-    category = db.Column(db.String(80), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     condition = db.Column(db.Enum(ProductCondition), nullable=False, default=ProductCondition.OLD)
     price = db.Column(db.Float, nullable=False)
     is_auction = db.Column(db.Boolean, nullable=False, default=False)
@@ -141,11 +142,13 @@ class Product(db.Model):
     location = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
-
+    
     # Relationships
     images = db.relationship('ProductImage', backref='product', lazy=True, cascade='all, delete-orphan')
     auction = db.relationship('Auction', backref='product', uselist=False, lazy=True)
     transactions = db.relationship('Transaction', backref='product', lazy=True)
+    saved_by_users = db.relationship('SavedItem', backref='product', lazy=True)
+    chats = db.relationship('Chat', backref='product', lazy=True)
 
     def to_dict(self):
         return {
@@ -153,7 +156,8 @@ class Product(db.Model):
             'seller_id': self.seller_id,
             'title': self.title,
             'description': self.description,
-            'category': self.category,
+            'category': self.category.name if self.category else None,
+            'category_id': self.category_id,
             'condition': self.condition.value if self.condition else None,
             'price': self.price,
             'is_auction': self.is_auction,
@@ -212,11 +216,9 @@ class Auction(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     winning_bid_id = db.Column(db.Integer, db.ForeignKey('bid.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-
-    # Relationships
-    product = db.relationship('Product', backref=db.backref('auction', uselist=False))
-    bids = db.relationship('Bid', foreign_keys=[winning_bid_id], backref='won_auction', lazy=True)
-    all_bids = db.relationship('Bid', primaryjoin="Bid.auction_id == Auction.id", backref='auction', lazy=True)
+    
+    # Relationships - Fixed circular reference
+    bids = db.relationship('Bid', backref='auction', lazy=True, foreign_keys='Bid.auction_id')
 
     def to_dict(self):
         return {
@@ -228,7 +230,7 @@ class Auction(db.Model):
             'is_active': self.is_active,
             'winning_bid_id': self.winning_bid_id,
             'created_at': self.created_at.isoformat() if self.created_at else None,
-            'current_highest_bid': max([bid.bid_amount for bid in self.all_bids]) if self.all_bids else None
+            'current_highest_bid': max([bid.bid_amount for bid in self.bids]) if self.bids else None
         }
 
 class Bid(db.Model):
@@ -239,9 +241,6 @@ class Bid(db.Model):
     bidder_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     bid_amount = db.Column(db.Float, nullable=False)
     bid_time = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-
-    # Relationships
-    bidder = db.relationship('User', backref='bids')    
     
     def to_dict(self):
         return {
@@ -262,10 +261,6 @@ class SavedItem(db.Model):
     alert_on_price_drop = db.Column(db.Boolean, default=False)
     saved_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
-    # Relationships
-    user = db.relationship('User', backref='saved_items')
-    product = db.relationship('Product', backref='saved_by')
-
     def to_dict(self):
         return {
             'id': self.id,
@@ -284,9 +279,6 @@ class SearchQuery(db.Model):
     query = db.Column(db.String(255), nullable=False)
     filters_json = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-
-    # Relationships
-    user = db.relationship('User', backref='saved_searches')
 
     def to_dict(self):
         return {
@@ -308,11 +300,8 @@ class Chat(db.Model):
     seller_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id', ondelete='CASCADE'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-
+    
     # Relationships
-    buyer = db.relationship('User', foreign_keys=[buyer_id], backref='buyer_chats')
-    seller = db.relationship('User', foreign_keys=[seller_id], backref='seller_chats')
-    product = db.relationship('Product', backref='chats')
     messages = db.relationship('Message', backref='chat', lazy=True, cascade='all, delete-orphan')
 
     def to_dict(self):
@@ -338,9 +327,6 @@ class Message(db.Model):
     sent_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     is_read = db.Column(db.Boolean, default=False)
 
-    # Relationships
-    sender = db.relationship('User', backref='sent_messages')
-
     def to_dict(self):
         return {
             'id': self.id,
@@ -361,10 +347,11 @@ class Transaction(db.Model):
     seller_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     price_paid = db.Column(db.Float, nullable=False)
     transaction_date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    status = db.Column(db.Enum(TransactionStatus), nullable=False, default=TransactionStatus.COMPLETED)    # Relationships
-    product = db.relationship('Product', backref='transactions')
-    buyer = db.relationship('User', foreign_keys=[buyer_id], backref='purchases_made')
-    seller = db.relationship('User', foreign_keys=[seller_id], backref='sales_made')
+    status = db.Column(db.Enum(TransactionStatus), nullable=False, default=TransactionStatus.COMPLETED)
+    
+    # Relationships
+    buyer = db.relationship('User', foreign_keys=[buyer_id])
+    seller = db.relationship('User', foreign_keys=[seller_id])
     reviews = db.relationship('Review', backref='transaction', lazy=True, cascade='all, delete-orphan')
     dispute = db.relationship('Dispute', backref='transaction', uselist=False, lazy=True, cascade='all, delete-orphan')
 
@@ -392,10 +379,6 @@ class Review(db.Model):
     rating = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-
-    # Relationships
-    reviewer = db.relationship('User', foreign_keys=[reviewer_id], backref='reviews_given')
-    reviewee = db.relationship('User', foreign_keys=[reviewee_id], backref='reviews_received')
 
     __table_args__ = (
         db.CheckConstraint('rating >= 1 AND rating <= 5', name='check_rating_range'),
@@ -426,10 +409,6 @@ class Dispute(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    # Relationships
-    transaction = db.relationship('Transaction', backref=db.backref('dispute', uselist=False))
-    complainant = db.relationship('User', backref='disputes_filed')
-
     def to_dict(self):
         return {
             'id': self.id,
@@ -456,9 +435,6 @@ class Notification(db.Model):
     payload = db.Column(db.Text, nullable=False)
     read = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-
-    # Relationships
-    user = db.relationship('User', backref='notifications')
 
     def to_dict(self):
         return {

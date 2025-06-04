@@ -1,2 +1,9 @@
 .venv
 instance
+.env
+**/__pycache__/
+*.py[cod]
+*.so
+*.pyo
+*.pyd
+.Python
