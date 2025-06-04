@@ -1,0 +1,45 @@
+<<<<<<< HEAD
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+=======
+**/.venv
+**/instance
+
+# Python bytecode and cache files
+__pycache__/
+*/__pycache__/
+*/**/__pycache__/
+*.py[cod]
+*/**/*.py[cod]
+*.so
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Specific to your project structure
+backend/__pycache__/
+backend/application/__pycache__/
+backend/application/resources/__pycache__/
+>>>>>>> 237576b1410bcfc6fd0ff19937efe08fde4cc052
