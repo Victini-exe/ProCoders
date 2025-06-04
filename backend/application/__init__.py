@@ -1,7 +1,7 @@
 from flask import Flask 
 from .database import db 
 from .models import User, Role, Category
-from config import LocalDevelopmentConfig
+from config import DevelopmentConfig
 from flask_security import Security, SQLAlchemyUserDatastore, hash_password
 from flask_restful import Api
 from flask_cors import CORS
@@ -9,7 +9,7 @@ from .resources import register_resources
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(LocalDevelopmentConfig)
+    app.config.from_object(DevelopmentConfig)
     db.init_app(app)
     datastore = SQLAlchemyUserDatastore(db, User, Role)
     app.security = Security(app, datastore)
