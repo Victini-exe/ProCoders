@@ -36,18 +36,17 @@ class LoginResource(Resource):
 class SignupResource(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
+        self.parser.add_argument('full_name', type=str, required=True, help='Full name is required', location='json')
         self.parser.add_argument('email', type=str, required=True, help='Email is required', location='json')
-        self.parser.add_argument('userName', type=str, required=False, help='Username is required', location='json')
+        self.parser.add_argument('phone_number', type=str, required=False, location='json')
         self.parser.add_argument('password', type=str, required=True, help='Password is required', location='json')
-        self.parser.add_argument('address', type=str,location='json', required=False, help='Address is optional')
-        self.parser.add_argument('displayName', type=str, required=False, help='Display name is required', location='json')
+        self.parser.add_argument('preferred_language', type=str, choices=['en', 'hi', 'gu'], default='en', location='json')
+        self.parser.add_argument('profile_image_url', type=str, required=False, location='json')
 
     def post(self):
         args = self.parser.parse_args()
         email = args['email']
-        username = args['userName']
         password = args['password']
-        display_name = args['displayName']
         
         if app.security.datastore.find_user(email=email):
             return {"message": "User already exists"}, 400
@@ -55,16 +54,17 @@ class SignupResource(Resource):
         try:
             role = app.security.datastore.find_role('user')
 
-            app.security.datastore.create_user(
+            user = app.security.datastore.create_user(
                 email=email,
-                username=username,
+                full_name=args['full_name'],
                 password=hash_password(str(password)),
-                display_name=display_name,
+                phone_number=args.get('phone_number'),
+                preferred_language=args['preferred_language'],
+                profile_image_url=args.get('profile_image_url'),
                 roles=[role],
             )
             db.session.commit()
             
-            user = app.security.datastore.find_user(email=email)
             login_user(user)
             auth_token = user.get_auth_token()
 
