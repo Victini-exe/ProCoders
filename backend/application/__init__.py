@@ -6,6 +6,7 @@ from flask_security import Security, SQLAlchemyUserDatastore, hash_password
 from flask_restful import Api
 from flask_cors import CORS
 from .resources import register_resources
+from .socket_events import socketio
 
 def create_app():
     app = Flask(__name__)
@@ -24,6 +25,11 @@ def create_app():
              "expose_headers": ["Content-Range", "X-Content-Range"],
              "supports_credentials": True
          }})
+
+    # Initialize Socket.IO
+    socketio.init_app(app, 
+                     cors_allowed_origins=["http://localhost:5173"],
+                     async_mode='threading')
 
     api = Api(app)
     register_resources(api)
