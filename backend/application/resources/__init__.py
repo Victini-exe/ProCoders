@@ -35,3 +35,8 @@ def register_resources(api: Api):
     api.add_resource(ChatDetailResource, '/chats/<int:chat_id>')
     api.add_resource(MessageResource, '/chats/<int:chat_id>/messages')
     api.add_resource(UnreadMessagesResource, '/chats/unread')
+
+    # Wishlist endpoints
+    from .wishlist import WishlistResource, WishlistItemResource
+    api.add_resource(WishlistResource, '/wishlist')
+    api.add_resource(WishlistItemResource, '/wishlist/<int:item_id>')
