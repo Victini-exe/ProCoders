@@ -70,3 +70,47 @@
 - All endpoints require authentication token
 - Only buyers can initiate chats
 - Messages are automatically marked as read when chat is viewed
+
+# Wishlist API
+
+## Endpoints
+
+### 1. `/wishlist`
+- **POST** - Add item to wishlist
+  ```json
+  {
+    "product_id": "integer",
+    "alert_on_price_drop": "boolean"
+  }
+  ```
+
+- **GET** - Get all wishlist items
+  - Returns array of saved items with product details
+
+### 2. `/wishlist/<item_id>`
+- **DELETE** - Remove item from wishlist
+- **PATCH** - Update price drop alert
+  ```json
+  {
+    "alert_on_price_drop": "boolean"
+  }
+  ```
+
+## Response Objects
+
+### SavedItem Object
+```json
+{
+  "id": "integer",
+  "user_id": "integer",
+  "product_id": "integer",
+  "alert_on_price_drop": "boolean",
+  "saved_at": "datetime",
+  "product": "Product object"
+}
+```
+
+## Notes
+- All endpoints require authentication token
+- Users can only access their own wishlist items
+- Price drop alerts can be toggled per item
