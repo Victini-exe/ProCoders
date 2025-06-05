@@ -21,7 +21,7 @@ export function useCategories() {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
       .then((res) => {
-        setCategories(res.data.categories);
+        setCategories(res.data?.categories || []);
         setLoading(false);
       })
       .catch((err) => {
