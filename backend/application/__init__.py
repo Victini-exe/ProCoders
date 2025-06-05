@@ -15,7 +15,15 @@ def create_app():
     app.security = Security(app, datastore)
     app.app_context().push()
 
-    CORS(app)
+    # Configure CORS
+    CORS(app, 
+         resources={r"/api/*": {
+             "origins": ["http://localhost:5173"],
+             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+             "allow_headers": ["Content-Type", "Authorization", "ngrok-skip-browser-warning"],
+             "expose_headers": ["Content-Range", "X-Content-Range"],
+             "supports_credentials": True
+         }})
 
     api = Api(app)
     register_resources(api)

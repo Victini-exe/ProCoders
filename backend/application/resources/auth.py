@@ -1,7 +1,8 @@
-from flask import current_app as app
+from flask import current_app as app, make_response
 from flask_restful import Resource, reqparse
 from flask_security import auth_required, hash_password, login_user, logout_user
 from flask_security.utils import verify_password
+import uuid
 from ..database import db
 
 class LoginResource(Resource):
@@ -36,11 +37,11 @@ class LoginResource(Resource):
 class SignupResource(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('full_name', type=str, required=True, help='Full name is required', location='json')
+        self.parser.add_argument('fullName', type=str, required=True, help='Full name is required', location='json')
         self.parser.add_argument('email', type=str, required=True, help='Email is required', location='json')
-        self.parser.add_argument('phone_number', type=str, required=False, location='json')
+        self.parser.add_argument('phoneNumber', type=str, required=False, location='json')
         self.parser.add_argument('password', type=str, required=True, help='Password is required', location='json')
-        self.parser.add_argument('preferred_language', type=str, choices=['en', 'hi', 'gu'], default='en', location='json')
+        self.parser.add_argument('preferredLanguage', type=str, default='english', location='json')
         self.parser.add_argument('profile_image_url', type=str, required=False, location='json')
 
     def post(self):
@@ -53,14 +54,26 @@ class SignupResource(Resource):
 
         try:
             role = app.security.datastore.find_role('user')
+            
+            # Convert frontend language format to backend format
+            language_mapping = {
+                'english': 'en',
+                'hindi': 'hi',
+                'gujarati': 'gu'
+            }
+            backend_language = language_mapping.get(args['preferredLanguage'].lower(), 'en')
+
+            # Generate fs_uniquifier
+            fs_uniquifier = str(uuid.uuid4())
 
             user = app.security.datastore.create_user(
                 email=email,
-                full_name=args['full_name'],
+                full_name=args['fullName'],
                 password=hash_password(str(password)),
-                phone_number=args.get('phone_number'),
-                preferred_language=args['preferred_language'],
+                phone_number=args.get('phoneNumber'),
+                preferred_language=backend_language,
                 profile_image_url=args.get('profile_image_url'),
+                fs_uniquifier=fs_uniquifier,
                 roles=[role],
             )
             db.session.commit()
