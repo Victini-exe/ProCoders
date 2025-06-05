@@ -7,13 +7,13 @@ const Watchlist = () => {
   const [watchlist, setWatchlist] = useState([]);
 
   useEffect(() => {
-    axios.get("/api/watchlist")
+    axios.get("/api/wishlist")
       .then((response) => setWatchlist(response.data))
       .catch((error) => console.error("Failed to fetch watchlist:", error));
   }, []);
 
   const handleRemove = (productId) => {
-    axios.delete(`/api/watchlist/${productId}`)
+    axios.delete(`/api/wishlist/${productId}`)
       .then(() => setWatchlist((prev) => prev.filter(item => item.id !== productId)))
       .catch((error) => console.error("Failed to remove item:", error));
   };
