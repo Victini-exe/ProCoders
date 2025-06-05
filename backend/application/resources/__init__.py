@@ -11,27 +11,27 @@ def register_resources(api: Api):
 
     # Product endpoints
     from .product import ProductListResource, ProductResource
-    api.add_resource(ProductListResource, '/products')
-    api.add_resource(ProductResource, '/products/<int:product_id>')
+    api.add_resource(ProductListResource, '/api/products')
+    api.add_resource(ProductResource, '/api/products/<int:product_id>')
 
     # Cart endpoints
     from .cart import CartListResource, CartItemResource
-    api.add_resource(CartListResource, '/cart')
-    api.add_resource(CartItemResource, '/cart/item', '/cart/item/<int:cart_item_id>')
+    api.add_resource(CartListResource, '/api/cart')
+    api.add_resource(CartItemResource, '/api/cart/item', '/api/cart/item/<int:cart_item_id>')
 
     # User endpoints
     from .user import UserListResource, UserResource
-    api.add_resource(UserListResource, '/users')
-    api.add_resource(UserResource, '/users/<int:user_id>')
+    api.add_resource(UserListResource, '/api/users')
+    api.add_resource(UserResource, '/api/users/<int:user_id>')
 
     # Category endpoints
     from .category import CategoryListResource, CategoryResource
-    api.add_resource(CategoryListResource, '/categories')
-    api.add_resource(CategoryResource, '/categories/<int:category_id>')
+    api.add_resource(CategoryListResource, '/api/categories')
+    api.add_resource(CategoryResource, '/api/categories/<int:category_id>')
 
     # Chat endpoints
     from .chat import ChatResource, ChatDetailResource, MessageResource, UnreadMessagesResource
-    api.add_resource(ChatResource, '/chats')
-    api.add_resource(ChatDetailResource, '/chats/<int:chat_id>')
-    api.add_resource(MessageResource, '/chats/<int:chat_id>/messages')
-    api.add_resource(UnreadMessagesResource, '/chats/unread')
+    api.add_resource(ChatResource, '/api/chats')
+    api.add_resource(ChatDetailResource, '/api/chats/<int:chat_id>')
+    api.add_resource(MessageResource, '/api/chats/<int:chat_id>/messages')
+    api.add_resource(UnreadMessagesResource, '/api/chats/unread')
